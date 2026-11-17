@@ -32,9 +32,9 @@ jobs:
       - name: Build debug APK and print SHA-1
         working-directory: extracted/NewMaDurgaAndroid
         run: |
-          gradle assembleDebug signingReport --stacktrace --console=plain
+          gradle assembleDebug signingReport --stacktrace --console=plain 2>&1 | tee build.log
           echo "----- DEBUG KEY SHA-1 (add this to Firebase Android app settings) -----"
-          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android -keypass android -alias androiddebugkey | grep -E "SHA1:"
+          grep -m1 "SHA1:" build.log || true
       - uses: actions/upload-artifact@v4
         with:
           name: New-Maa-Durga-OTP-debug-APK
