@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "12_MAA_DURGA_BILLING.Zip"
+      - "12_MAA_DURGA_BILLING.zip"
       - ".github/workflows/android-build.yml"
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
       - name: Extract project ZIP
         run: |
           mkdir -p extracted
-          unzip -o "12_MAA_DURGA_BILLING.Zip" -d extracted
+          unzip -o "12_MAA_DURGA_BILLING.zip" -d extracted
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
