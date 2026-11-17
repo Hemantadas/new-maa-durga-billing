@@ -118,7 +118,8 @@ public class OtpLoginActivity extends Activity {
                 }
                 @Override public void onVerificationFailed(FirebaseException e) {
                     sendButton.setEnabled(true);
-                    Toast.makeText(OtpLoginActivity.this, "OTP পাঠানো যায়নি: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    String detail = "OTP পাঠানো যায়নি | Type: " + e.getClass().getSimpleName() + " | Firebase code: " + e.getErrorCode() + " | Message: " + e.getMessage();
+                    Toast.makeText(OtpLoginActivity.this, detail, Toast.LENGTH_LONG).show();
                 }
                 @Override public void onCodeSent(String id, PhoneAuthProvider.ForceResendingToken token) {
                     verificationId = id; resendToken = token; codeSent = true;
