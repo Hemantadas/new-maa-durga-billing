@@ -21,6 +21,39 @@ jobs:
         run: |
           mkdir -p extracted
           unzip -o "12_MAA_DURGA_BILLING.zip" -d extracted
+      - name: Diagnose Firebase and Gradle configuration
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root = Path("extracted")
+          print("=== PROJECT FILES ===")
+          for p in sorted(root.rglob("*")):
+              if p.is_file() and (p.name in ("settings.gradle", "settings.gradle.kts", "build.gradle", "build.gradle.kts", "gradle.properties", "google-services.json")):
+                  print(p)
+          print("=== GRADLE CONFIG ===")
+          for p in sorted(root.rglob("*")):
+              if p.is_file() and p.name in ("settings.gradle", "settings.gradle.kts", "build.gradle", "build.gradle.kts"):
+                  print("\\n---", p, "---")
+                  print(p.read_text(errors="replace")[:12000])
+          print("=== FIREBASE JSON SAFE FIELDS ===")
+          found = False
+          for p in root.rglob("google-services.json"):
+              found = True
+              try:
+                  d = json.loads(p.read_text())
+                  print("FILE:", p)
+                  print("project_id:", d.get("project_info", {}).get("project_id"))
+                  print("project_number:", d.get("project_info", {}).get("project_number"))
+                  for c in d.get("client", []):
+                      ci = c.get("client_info", {})
+                      print("package_name:", ci.get("android_client_info", {}).get("package_name"))
+                      print("mobilesdk_app_id:", ci.get("mobilesdk_app_id"))
+              except Exception as e:
+                  print("JSON_PARSE_ERROR:", type(e).__name__, str(e))
+          if not found:
+              print("NO google-services.json FOUND")
+          PY
       - name: Add Firebase phone OTP login
         run: |
           python3 otp-src/otp_patch.py
