@@ -1,0 +1,33 @@
+name: Android debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "12_MAA_DURGA_BILLING.Zip"
+      - ".github/workflows/android-build.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Extract project ZIP
+        run: |
+          mkdir -p extracted
+          unzip -o "12_MAA_DURGA_BILLING.Zip" -d extracted
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: Build debug APK
+        working-directory: extracted/NewMaDurgaAndroid
+        run: gradle assembleDebug --stacktrace --console=plain
+      - uses: actions/upload-artifact@v4
+        with:
+          name: New-Maa-Durga-debug-APK
+          path: extracted/NewMaDurgaAndroid/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
