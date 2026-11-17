@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -118,7 +119,7 @@ public class OtpLoginActivity extends Activity {
                 }
                 @Override public void onVerificationFailed(FirebaseException e) {
                     sendButton.setEnabled(true);
-                    String detail = "OTP পাঠানো যায়নি | Type: " + e.getClass().getSimpleName() + " | Firebase code: " + e.getErrorCode() + " | Message: " + e.getMessage();
+                    String detail = "OTP পাঠানো যায়নি | Type: " + e.getClass().getSimpleName() + " | Firebase code: " + (e instanceof FirebaseAuthException ? ((FirebaseAuthException)e).getErrorCode() : "unknown") + " | Message: " + e.getMessage();
                     Toast.makeText(OtpLoginActivity.this, detail, Toast.LENGTH_LONG).show();
                 }
                 @Override public void onCodeSent(String id, PhoneAuthProvider.ForceResendingToken token) {
