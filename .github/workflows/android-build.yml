@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "12_MAA_DURGA_BILLING.zip"
+      - "otp-src/**"
       - ".github/workflows/android-build.yml"
 
 jobs:
@@ -20,14 +21,22 @@ jobs:
         run: |
           mkdir -p extracted
           unzip -o "12_MAA_DURGA_BILLING.zip" -d extracted
+      - name: Add Firebase phone OTP login
+        run: |
+          python3 otp-src/otp_patch.py
+          mkdir -p extracted/NewMaDurgaAndroid/app/src/main/java/com/newmadurga/billing
+          cp otp-src/OtpLoginActivity.java extracted/NewMaDurgaAndroid/app/src/main/java/com/newmadurga/billing/
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
-      - name: Build debug APK
+      - name: Build debug APK and print SHA-1
         working-directory: extracted/NewMaDurgaAndroid
-        run: gradle assembleDebug --stacktrace --console=plain
+        run: |
+          gradle assembleDebug signingReport --stacktrace --console=plain
+          echo "----- DEBUG KEY SHA-1 (add this to Firebase Android app settings) -----"
+          keytool -list -v -keystore "$HOME/.android/debug.keystore" -storepass android -keypass android -alias androiddebugkey | grep -E "SHA1:"
       - uses: actions/upload-artifact@v4
         with:
-          name: New-Maa-Durga-debug-APK
+          name: New-Maa-Durga-OTP-debug-APK
           path: extracted/NewMaDurgaAndroid/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
