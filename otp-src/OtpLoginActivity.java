@@ -1,6 +1,7 @@
 package com.newmadurga.billing;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -57,7 +58,7 @@ public class OtpLoginActivity extends Activity {
 
         phoneInput = new EditText(this);
         phoneInput.setSingleLine(true);
-        phoneInput.setText("+919932883333");
+        phoneInput.setText("+919932886333");
         phoneInput.setHint("+91 মোবাইল নম্বর");
         phoneInput.setTextColor(Color.WHITE);
         phoneInput.setHintTextColor(Color.LTGRAY);
@@ -103,7 +104,7 @@ public class OtpLoginActivity extends Activity {
     private void sendOtp() {
         String phone = phoneInput.getText().toString().trim().replace(" ", "");
         if (!phone.matches("^\\+[1-9][0-9]{7,14}$")) {
-            phoneInput.setError("দেশের কোডসহ নম্বর লিখুন, যেমন +919932883333");
+            phoneInput.setError("দেশের কোডসহ নম্বর লিখুন, যেমন +919932886333");
             return;
         }
         sendButton.setEnabled(false);
@@ -145,7 +146,7 @@ public class OtpLoginActivity extends Activity {
         auth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "লগইন সফল", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
             } else {
                 verifyButton.setEnabled(true);
