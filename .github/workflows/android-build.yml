@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "12_MAA_DURGA_BILLING.zip"
+      - "19_MAA_DURGA_BILLING_OTP_CLOUD_BUILD.zip"
       - "otp-src/**"
       - ".github/workflows/android-build.yml"
 
@@ -20,7 +20,7 @@ jobs:
       - name: Extract project ZIP
         run: |
           mkdir -p extracted
-          unzip -o "12_MAA_DURGA_BILLING.zip" -d extracted
+          unzip -o "19_MAA_DURGA_BILLING_OTP_CLOUD_BUILD.zip" -d extracted
       - name: Diagnose Firebase and Gradle configuration
         run: |
           python3 - <<'PY'
