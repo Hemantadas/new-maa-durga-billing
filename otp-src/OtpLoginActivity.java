@@ -1,6 +1,7 @@
 package com.newmadurga.billing;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,7 +61,7 @@ public class OtpLoginActivity extends Activity {
 
         phoneInput = new EditText(this);
         phoneInput.setSingleLine(true);
-        phoneInput.setText("+919932886333");
+        phoneInput.setText("+919475024007");
         phoneInput.setHint("+91 মোবাইল নম্বর");
         phoneInput.setTextColor(Color.WHITE);
         phoneInput.setHintTextColor(Color.LTGRAY);
@@ -119,8 +121,27 @@ public class OtpLoginActivity extends Activity {
                 }
                 @Override public void onVerificationFailed(FirebaseException e) {
                     sendButton.setEnabled(true);
-                    String detail = "OTP পাঠানো যায়নি | Type: " + e.getClass().getSimpleName() + " | Firebase code: " + (e instanceof FirebaseAuthException ? ((FirebaseAuthException)e).getErrorCode() : "unknown") + " | Message: " + e.getMessage();
-                    Toast.makeText(OtpLoginActivity.this, detail, Toast.LENGTH_LONG).show();
+                    StringBuilder detail = new StringBuilder();
+                    detail.append("ত্রুটির ধরন: ").append(e.getClass().getName());
+                    detail.append("\nFirebase code: ").append(e instanceof FirebaseAuthException ? ((FirebaseAuthException)e).getErrorCode() : "unknown");
+                    detail.append("\nবিস্তারিত: ").append(e.getMessage() == null ? "কোনো বার্তা পাওয়া যায়নি" : e.getMessage());
+                    Throwable cause = e.getCause();
+                    int depth = 0;
+                    while (cause != null && depth < 4) {
+                        detail.append("\n\nকারণ ").append(++depth).append(": ").append(cause.getClass().getName());
+                        if (cause.getMessage() != null) detail.append("\n").append(cause.getMessage());
+                        cause = cause.getCause();
+                    }
+                    Log.e("MaaDurgaOTP", detail.toString(), e);
+                    TextView errorText = new TextView(OtpLoginActivity.this);
+                    errorText.setText(detail.toString());
+                    errorText.setTextIsSelectable(true);
+                    errorText.setPadding(dp(20), dp(12), dp(20), dp(12));
+                    new AlertDialog.Builder(OtpLoginActivity.this)
+                        .setTitle("OTP পাঠানো যায়নি")
+                        .setView(errorText)
+                        .setPositiveButton("ঠিক আছে", null)
+                        .show();
                 }
                 @Override public void onCodeSent(String id, PhoneAuthProvider.ForceResendingToken token) {
                     verificationId = id; resendToken = token; codeSent = true;
