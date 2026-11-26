@@ -54,16 +54,21 @@ jobs:
           if not found:
               print("NO google-services.json FOUND")
           PY
-      - name: Add Firebase phone OTP login
+      - name: Locate Android project
+        id: project
         run: |
-          python3 otp-src/otp_patch.py
-          mkdir -p extracted/NewMaDurgaAndroid/app/src/main/java/com/newmadurga/billing
-          cp otp-src/OtpLoginActivity.java extracted/NewMaDurgaAndroid/app/src/main/java/com/newmadurga/billing/
+          PROJECT_DIR="$(dirname "$(find extracted -name settings.gradle -o -name settings.gradle.kts | head -n 1)")"
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "Android Gradle project not found in source ZIP"
+            exit 1
+          fi
+          echo "dir=$PROJECT_DIR" >> "$GITHUB_OUTPUT"
+          echo "Using Android project: $PROJECT_DIR"
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
       - name: Build debug APK and print SHA-1
-        working-directory: extracted/NewMaDurgaAndroid
+        working-directory: ${{ steps.project.outputs.dir }}
         run: |
           gradle assembleDebug signingReport --stacktrace --console=plain 2>&1 | tee build.log
           echo "----- DEBUG KEY SHA-1 (add this to Firebase Android app settings) -----"
@@ -71,5 +76,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: New-Maa-Durga-OTP-debug-APK
-          path: extracted/NewMaDurgaAndroid/app/build/outputs/apk/debug/*.apk
+          path: extracted/**/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
