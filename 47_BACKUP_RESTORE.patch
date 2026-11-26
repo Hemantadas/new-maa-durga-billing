@@ -1,7 +1,8 @@
 --- a/NewMaDurgaAndroid/app/build.gradle
 +++ b/NewMaDurgaAndroid/app/build.gradle
 @@ -9,8 +9,8 @@
-         applicationId 'com.newmadurga.billing.dev'
+-        applicationId 'com.newmadurga.billing.dev'
++        applicationId 'com.newmadurga.billing.dev47'
          minSdk 23
          targetSdk 32
 -        versionCode 1
