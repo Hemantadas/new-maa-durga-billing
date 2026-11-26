@@ -13,4 +13,104 @@
  
 --- a/NewMaDurgaAndroid/app/src/main/assets/index.html
 +++ b/NewMaDurgaAndroid/app/src/main/assets/index.html
-@@ -0,0 +1,0 @@
+@@ -187,7 +187,7 @@
+ <section id="quick" class="screen active"><div class="bar quick-head"><span>SR</span><span>DETAILS</span><span>HSN</span><span>QTY</span><span>RATE</span><span>TOTAL</span></div><div id="quickLines"></div><div class="quick-entry-dock"><div class="totalbox"><span id="quickQty">0</span><span id="quickTotal">₹0</span></div><input id="qName" class="field" placeholder="DETAILS" list="savedProductNames" oninput="autoFillSavedProduct()" onchange="autoFillSavedProduct()"><datalist id="savedProductNames"></datalist><div class="three"><input id="qHsn" class="field" placeholder="HSN"><input id="qQty" class="field" type="number" inputmode="none" autocomplete="off" value="1" placeholder="Qty"><input id="qRate" class="field" type="number" inputmode="none" autocomplete="off" placeholder="Rate"></div><div class="row" style="gap:6px;margin:7px 0"><button style="flex:1" onclick="scanCode()">▣ Scan Item / Barcode</button><button type="button" class="save" style="min-width:54px" onclick="addQuick()" aria-label="Enter: আইটেম যোগ করুন">↵ Enter</button></div></div><div class="pad"><button onclick="digit('7')">7</button><button onclick="digit('8')">8</button><button onclick="digit('9')">9</button><button class="save" onclick="showSaveBill()">▣<br>Save</button><button onclick="digit('4')">4</button><button onclick="digit('5')">5</button><button onclick="digit('6')">6</button><button class="save" onclick="addQuick()">Enter<br>↵</button><button onclick="digit('1')">1</button><button onclick="digit('2')">2</button><button onclick="digit('3')">3</button><button onclick="digit('0')">0</button><button class="red" onclick="backspaceDigit()" aria-label="শেষের সংখ্যা কাটুন">⌫</button><button class="red" onclick="clearNumber()" aria-label="সংখ্যা মুছুন">C</button></div></section>
+ <section id="items" class="screen"><div class="bar item-head"><span>ITEM</span><span>QTY</span><span>RATE</span><span>TOTAL</span></div><div id="itemBillLines"></div><div class="totalbox"><span id="itemQty">0</span><span id="itemTotal">₹0</span></div><div class="actions"><button class="red" onclick="clearBill()">Clear</button><button onclick="openProductForm()">Add Product</button><button class="gray" onclick="printCurrent()">Print</button><button class="gray" onclick="showSaveBill()">Save</button><button onclick="scanCode()">▥</button><button onclick="searchProduct()">⌕</button></div><div class="tabs" id="categoryTabs"></div><div id="productGrid" class="product-grid"></div></section>
+ <section id="reports" class="screen"><div class="two"><label class="muted">FROM<input class="field" id="fromDate" type="date"></label><label class="muted">TO<input class="field" id="toDate" type="date"></label></div><div class="actions"><button onclick="renderReports()">Filter</button><button class="gray" onclick="exportCSV()">Export CSV</button><button class="red" onclick="deleteAllBills()">Delete All</button></div><p id="reportCount"></p><div id="reportList"></div><div class="report-total"><b id="reportGrand">Total: ₹0</b></div></section>
+-<section id="settings" class="screen settings"><h3>Print Setting</h3><label>UPI ID<input id="upi" class="field" value="paytm.s28suft@pty" placeholder="আপনার UPI ID"></label><p class="small muted">প্রতিটি কাস্টমারের QR-এ সেই বিলের হিসাব করা মোট টাকা নিজে থেকেই বসবে। আলাদা Fixed Amount দিতে হবে না।</p><div id="qrPreview" class="muted">UPI QR এখানে তৈরি হবে (UPI ID সংরক্ষণ করলে)</div><label>Footer Image<input id="footerImage" class="field" type="file" accept="image/*"></label><h3>Print Settings</h3><div class="billform" style="border:1px solid #ff8a00"><b style="color:#ff9b20">ATPOS M80 Bluetooth Printer</b><p>Paper: 80mm (79mm roll) · Print DPI: 203</p><p class="small">Android অ্যাপের Connect বাটন দিয়ে Pair করা Bluetooth প্রিন্টার নির্বাচন করুন; সরাসরি SPP সংযোগে প্রিন্ট হবে।</p><div class="actions"><button type="button" onclick="AndroidPrinter&&AndroidPrinter.connectPrinter?AndroidPrinter.connectPrinter():openBluetoothGuide()">Bluetooth Connect</button><button type="button" class="green" onclick="bluetoothTestPrint()">Test Print</button></div></div><label>Roll Size<select id="rollSize" class="field"><option>2 Inch : 32 Size</option><option selected>3 Inch : 42 Size</option></select></label><label>Invoice Serial No.<input id="invoiceStart" class="field" type="number" value="1"></label><label>Shop Name<input id="shopName" class="field" value="নিউ মা দূর্গা এন্টারপ্রাইজ"></label><label>Address<input id="shopAddress" class="field" value="নেতাজী রোড, পুরাতন কান্দি বাসস্ট্যান্ড, বহরমপুর, মুর্শিদাবাদ"></label><label>Mobile<input id="shopPhone" class="field" value="9475024007"></label><label>Gmail / Email Address (ঐচ্ছিক)<input id="shopEmail" class="field" type="email" inputmode="email" placeholder="yourname@gmail.com"></label><label>GST Number (ঐচ্ছিক)<input id="shopGst" class="field"></label><label>Shop Logo<input id="shopLogo" class="field" type="file" accept="image/*" onchange="previewLogoCrop(event)"></label><div id="logoCropBox" class="billform hidden"><b>লোগো Crop করুন</b><div style="width:190px;height:190px;overflow:hidden;border:2px dashed #ff8a00;border-radius:12px;margin:10px auto;background:#fff"><img id="logoCropPreview" style="width:100%;height:100%;object-fit:cover" alt="Logo preview"></div><label>Zoom <input id="logoZoom" type="range" min="1" max="3" step="0.1" value="1" class="field" oninput="updateLogoCrop()"></label><label>উপর-নিচ <input id="logoY" type="range" min="0" max="100" value="50" class="field" oninput="updateLogoCrop()"></label><label>ডান-বাম <input id="logoX" type="range" min="0" max="100" value="50" class="field" oninput="updateLogoCrop()"></label><button type="button" onclick="applyLogoCrop()">Crop করে রাখুন</button></div><div class="actions"><button onclick="saveSettings()">Save Settings</button><button class="gray" onclick="backupData()">Backup</button><button class="gray" onclick="document.getElementById('restoreFile').click()">Restore</button><input id="restoreFile" type="file" accept="application/json" hidden onchange="restoreData(event)"></div></section>
++<section id="settings" class="screen settings"><h3>Print Setting</h3><label>UPI ID<input id="upi" class="field" value="paytm.s28suft@pty" placeholder="আপনার UPI ID"></label><p class="small muted">প্রতিটি কাস্টমারের QR-এ সেই বিলের হিসাব করা মোট টাকা নিজে থেকেই বসবে। আলাদা Fixed Amount দিতে হবে না।</p><div id="qrPreview" class="muted">UPI QR এখানে তৈরি হবে (UPI ID সংরক্ষণ করলে)</div><label>Footer Image<input id="footerImage" class="field" type="file" accept="image/*"></label><h3>Print Settings</h3><div class="billform" style="border:1px solid #ff8a00"><b style="color:#ff9b20">ATPOS M80 Bluetooth Printer</b><p>Paper: 80mm (79mm roll) · Print DPI: 203</p><p class="small">Android অ্যাপের Connect বাটন দিয়ে Pair করা Bluetooth প্রিন্টার নির্বাচন করুন; সরাসরি SPP সংযোগে প্রিন্ট হবে।</p><div class="actions"><button type="button" onclick="AndroidPrinter&&AndroidPrinter.connectPrinter?AndroidPrinter.connectPrinter():openBluetoothGuide()">Bluetooth Connect</button><button type="button" class="green" onclick="bluetoothTestPrint()">Test Print</button></div></div><label>Roll Size<select id="rollSize" class="field"><option>2 Inch : 32 Size</option><option selected>3 Inch : 42 Size</option></select></label><label>Invoice Serial No.<input id="invoiceStart" class="field" type="number" value="1"></label><label>Shop Name<input id="shopName" class="field" value="নিউ মা দূর্গা এন্টারপ্রাইজ"></label><label>Address<input id="shopAddress" class="field" value="নেতাজী রোড, পুরাতন কান্দি বাসস্ট্যান্ড, বহরমপুর, মুর্শিদাবাদ"></label><label>Mobile<input id="shopPhone" class="field" value="9475024007"></label><label>Gmail / Email Address (ঐচ্ছিক)<input id="shopEmail" class="field" type="email" inputmode="email" placeholder="yourname@gmail.com"></label><label>GST Number (ঐচ্ছিক)<input id="shopGst" class="field"></label><label>Shop Logo<input id="shopLogo" class="field" type="file" accept="image/*" onchange="previewLogoCrop(event)"></label><div id="logoCropBox" class="billform hidden"><b>লোগো Crop করুন</b><div style="width:190px;height:190px;overflow:hidden;border:2px dashed #ff8a00;border-radius:12px;margin:10px auto;background:#fff"><img id="logoCropPreview" style="width:100%;height:100%;object-fit:cover" alt="Logo preview"></div><label>Zoom <input id="logoZoom" type="range" min="1" max="3" step="0.1" value="1" class="field" oninput="updateLogoCrop()"></label><label>উপর-নিচ <input id="logoY" type="range" min="0" max="100" value="50" class="field" oninput="updateLogoCrop()"></label><label>ডান-বাম <input id="logoX" type="range" min="0" max="100" value="50" class="field" oninput="updateLogoCrop()"></label><button type="button" onclick="applyLogoCrop()">Crop করে রাখুন</button></div><div class="actions"><button onclick="saveSettings()">Save Settings</button><button class="gray" onclick="backupData()">Backup</button><button class="gray" onclick="chooseRestoreFile()">Restore</button><input id="restoreFile" type="file" accept="application/json" hidden onchange="restoreData(event)"></div></section>
+ <section id="customers" class="screen"><h3>Customers</h3><div class="actions"><button onclick="addCustomer()">+ Add Customer</button></div><div id="customerList"></div></section>
+ </main><section id="printArea" class="print-area" style="display:none"></section>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>
+@@ -341,7 +341,7 @@
+  }
+  invoice=Number(settings.invoiceStart)||invoice;
+  try{store();renderSettingsQr();alert('Settings ও লোগো সংরক্ষণ হয়েছে')}catch(e){alert('জায়গা কম থাকায় সেভ হয়নি। ছোট ছবি নির্বাচন করুন বা পুরোনো ডেটার Backup নিন।')}
+-}function backupData(){let data={catalog,bills,customers,settings},a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='maa-durga-backup.json';a.click();URL.revokeObjectURL(a.href)}function restoreData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);catalog=d.catalog||[];bills=d.bills||[];customers=d.customers||[];settings=d.settings||{};store();alert('Restore হয়েছে');showScreen('quick')}catch(err){alert('Backup ফাইল সঠিক নয়')}};r.readAsText(f)}
++}function backupData(){try{store();let data={app:'New Maa Durga Billing',backupVersion:1,createdAt:new Date().toISOString(),catalog,bills,customers,settings};let json=JSON.stringify(data,null,2);if(window.AndroidBackup&&AndroidBackup.saveBackup){AndroidBackup.saveBackup(json);return}let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));a.download='New-Maa-Durga-Backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}catch(err){alert('Backup তৈরি হয়নি। আবার চেষ্টা করুন।')}}function applyBackupJson(raw){try{let d=typeof raw==='string'?JSON.parse(raw):raw;if(!d||!Array.isArray(d.catalog)||!Array.isArray(d.bills)||!Array.isArray(d.customers)||typeof d.settings!=='object'||d.settings===null)throw new Error('invalid');if(!confirm('বর্তমান বিল, পণ্য, কাস্টমার ও সেটিংস Backup-এর তথ্য দিয়ে বদলে যাবে। Restore করবেন?'))return;catalog=d.catalog;bills=d.bills;customers=d.customers;settings=d.settings;store();invoice=Number(settings.invoiceStart||1);alert('Restore সফল হয়েছে। আপনার বিল ও পণ্যের তথ্য ফিরে এসেছে।');showScreen('quick')}catch(err){alert('Backup ফাইল সঠিক নয় অথবা অসম্পূর্ণ। বর্তমান ডেটা বদলানো হয়নি।')}}function restoreData(e){let f=e.target.files&&e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>applyBackupJson(r.result);r.onerror=()=>alert('Backup ফাইল পড়া যায়নি');r.readAsText(f);e.target.value=''}window.onNativeBackupRestored=function(json){applyBackupJson(json)};function chooseRestoreFile(){if(window.AndroidBackup&&AndroidBackup.restoreBackup){AndroidBackup.restoreBackup();return}document.getElementById('restoreFile').click()}
+ // Development build: shared Shop ID and 6-digit PIN. Local app lock only; not cloud/server authentication.
+ const SHOP_LOGIN_ID='9475024007';const SHOP_LOGIN_PIN='742101';
+ function doLogin(){const id=($('loginShopId').value||'').replace(/\D/g,'');const pin=($('loginPin').value||'').replace(/\D/g,'');if(id!==SHOP_LOGIN_ID||pin!==SHOP_LOGIN_PIN){$('loginError').textContent='মোবাইল নম্বর অথবা PIN সঠিক নয়';$('loginPin').value='';return}localStorage.setItem('maaLoggedIn','1');$('loginGate').style.display='none';$('loginError').textContent='';}
+--- a/NewMaDurgaAndroid/app/src/main/java/com/newmadurga/billing/MainActivity.java
++++ b/NewMaDurgaAndroid/app/src/main/java/com/newmadurga/billing/MainActivity.java
+@@ -37,7 +37,7 @@
+ import java.util.UUID;
+ 
+ public class MainActivity extends Activity {
+-    private static final int REQ_BT=701, REQ_CAMERA=702, REQ_FILE=703;
++    private static final int REQ_BT=701, REQ_CAMERA=702, REQ_FILE=703, REQ_BACKUP_SAVE=704, REQ_BACKUP_OPEN=705;
+     private static final UUID SPP=UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+     private WebView web;
+     private BluetoothAdapter adapter;
+@@ -48,6 +48,7 @@
+     private ValueCallback<Uri[]> fileCallback;
+     private PermissionRequest cameraRequest;
+     private boolean pendingPrinterPicker=false;
++    private String pendingBackupJson="";
+ 
+     @Override public void onCreate(Bundle state) {
+         super.onCreate(state);
+@@ -83,6 +84,7 @@
+         web.setWebViewClient(new WebViewClient());
+         web.addJavascriptInterface(new PrinterBridge(),"AndroidPrinter");
+         web.addJavascriptInterface(new NativeFilesBridge(),"AndroidFiles");
++        web.addJavascriptInterface(new BackupBridge(),"AndroidBackup");
+         setContentView(web);
+         web.loadUrl("file:///android_asset/index.html");
+         requestBluetoothPermissionAndReconnect();
+@@ -98,6 +100,21 @@
+             }
+             fileCallback.onReceiveValue(result);
+             fileCallback=null;
++        } else if(requestCode==REQ_BACKUP_SAVE && resultCode==RESULT_OK && data!=null && data.getData()!=null) {
++            try(OutputStream out=getContentResolver().openOutputStream(data.getData())) {
++                if(out==null) throw new IOException("ফাইল লেখা যায়নি");
++                out.write(pendingBackupJson.getBytes("UTF-8")); out.flush();
++                toast("Backup ফাইল নিরাপদে সেভ হয়েছে");
++            } catch(Exception e) { toast("Backup সেভ হয়নি। আবার চেষ্টা করুন।"); }
++            pendingBackupJson="";
++        } else if(requestCode==REQ_BACKUP_OPEN && resultCode==RESULT_OK && data!=null && data.getData()!=null) {
++            try(InputStream in=getContentResolver().openInputStream(data.getData())) {
++                if(in==null) throw new IOException("ফাইল পড়া যায়নি");
++                java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream(); byte[] buf=new byte[8192]; int n;
++                while((n=in.read(buf))!=-1) bytes.write(buf,0,n);
++                String json=new String(bytes.toByteArray(),"UTF-8");
++                web.evaluateJavascript("window.onNativeBackupRestored("+org.json.JSONObject.quote(json)+")",null);
++            } catch(Exception e) { toast("Backup ফাইল খোলা যায়নি"); }
+         }
+     }
+ 
+@@ -206,6 +223,33 @@
+         }
+     }
+ 
++
++    private class BackupBridge {
++        @JavascriptInterface public void saveBackup(String json) {
++            if(json==null || json.trim().isEmpty()){toast("Backup ডেটা খালি");return;}
++            pendingBackupJson=json;
++            runOnUiThread(() -> {
++                try {
++                    Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT);
++                    intent.addCategory(Intent.CATEGORY_OPENABLE);
++                    intent.setType("application/json");
++                    intent.putExtra(Intent.EXTRA_TITLE,"New-Maa-Durga-Backup-"+new java.text.SimpleDateFormat("yyyyMMdd-HHmm",java.util.Locale.US).format(new java.util.Date())+".json");
++                    startActivityForResult(intent,REQ_BACKUP_SAVE);
++                } catch(Exception e){pendingBackupJson="";toast("ফোনে Backup ফাইল তৈরি করা যাচ্ছে না");}
++            });
++        }
++        @JavascriptInterface public void restoreBackup() {
++            runOnUiThread(() -> {
++                try {
++                    Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT);
++                    intent.addCategory(Intent.CATEGORY_OPENABLE);
++                    intent.setType("application/json");
++                    startActivityForResult(intent,REQ_BACKUP_OPEN);
++                } catch(Exception e){toast("Backup ফাইল নির্বাচন করা যাচ্ছে না");}
++            });
++        }
++    }
++
+     private class NativeFilesBridge {
+         @JavascriptInterface public void shareFile(String dataUrl,String mime,String fileName) {
+             new Thread(() -> {
