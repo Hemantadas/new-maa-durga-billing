@@ -1,11 +1,10 @@
-name: Android debug APK
+name: New Maa Durga 6-Digit PIN DEV APK
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - "45_NEW_MAA_DURGA_PIN_4007_SOURCE.zip"
-      - "otp-src/**"
+      - "46_NEW_MAA_DURGA_6DIGIT_PIN_DEV_SOURCE.zip"
       - ".github/workflows/android-build.yml"
 
 jobs:
@@ -17,43 +16,10 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Extract project ZIP
+      - name: Extract version 46 development source ZIP
         run: |
           mkdir -p extracted
-          unzip -o "45_NEW_MAA_DURGA_PIN_4007_SOURCE.zip" -d extracted
-      - name: Diagnose Firebase and Gradle configuration
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import json
-          root = Path("extracted")
-          print("=== PROJECT FILES ===")
-          for p in sorted(root.rglob("*")):
-              if p.is_file() and (p.name in ("settings.gradle", "settings.gradle.kts", "build.gradle", "build.gradle.kts", "gradle.properties", "google-services.json")):
-                  print(p)
-          print("=== GRADLE CONFIG ===")
-          for p in sorted(root.rglob("*")):
-              if p.is_file() and p.name in ("settings.gradle", "settings.gradle.kts", "build.gradle", "build.gradle.kts"):
-                  print("\\n---", p, "---")
-                  print(p.read_text(errors="replace")[:12000])
-          print("=== FIREBASE JSON SAFE FIELDS ===")
-          found = False
-          for p in root.rglob("google-services.json"):
-              found = True
-              try:
-                  d = json.loads(p.read_text())
-                  print("FILE:", p)
-                  print("project_id:", d.get("project_info", {}).get("project_id"))
-                  print("project_number:", d.get("project_info", {}).get("project_number"))
-                  for c in d.get("client", []):
-                      ci = c.get("client_info", {})
-                      print("package_name:", ci.get("android_client_info", {}).get("package_name"))
-                      print("mobilesdk_app_id:", ci.get("mobilesdk_app_id"))
-              except Exception as e:
-                  print("JSON_PARSE_ERROR:", type(e).__name__, str(e))
-          if not found:
-              print("NO google-services.json FOUND")
-          PY
+          unzip -o "46_NEW_MAA_DURGA_6DIGIT_PIN_DEV_SOURCE.zip" -d extracted
       - name: Locate Android project
         id: project
         run: |
@@ -67,14 +33,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
-      - name: Build debug APK and print SHA-1
+      - name: Build development debug APK
         working-directory: ${{ steps.project.outputs.dir }}
-        run: |
-          gradle assembleDebug signingReport --stacktrace --console=plain 2>&1 | tee build.log
-          echo "----- DEBUG KEY SHA-1 (add this to Firebase Android app settings) -----"
-          grep -m1 "SHA1:" build.log || true
+        run: gradle assembleDebug --stacktrace --console=plain
       - uses: actions/upload-artifact@v4
         with:
-          name: New-Maa-Durga-OTP-debug-APK
+          name: New-Maa-Durga-6Digit-PIN-DEV-APK
           path: extracted/**/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
