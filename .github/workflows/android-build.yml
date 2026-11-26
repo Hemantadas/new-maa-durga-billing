@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "46_NEW_MAA_DURGA_6DIGIT_PIN_DEV_SOURCE.zip"
+      - "47_BACKUP_RESTORE.patch"
       - ".github/workflows/android-build.yml"
 
 jobs:
@@ -20,6 +21,9 @@ jobs:
         run: |
           mkdir -p extracted
           unzip -o "46_NEW_MAA_DURGA_6DIGIT_PIN_DEV_SOURCE.zip" -d extracted
+      - name: Apply version 47 backup and restore changes
+        run: |
+          patch -d extracted/maa12 -p1 < 47_BACKUP_RESTORE.patch
       - name: Locate Android project
         id: project
         run: |
@@ -38,13 +42,14 @@ jobs:
         run: gradle assembleDebug --stacktrace --console=plain
       - uses: actions/upload-artifact@v4
         with:
-          name: New-Maa-Durga-6Digit-PIN-DEV-APK
+          name: New-Maa-Durga-47-BACKUP-RESTORE-DEV-APK
           path: extracted/**/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
-
-      - name: Preserve extracted source for development
+      - name: Preserve version 47 source materials
         uses: actions/upload-artifact@v4
         with:
-          name: New-Maa-Durga-46-DEV-SOURCE
-          path: 46_NEW_MAA_DURGA_6DIGIT_PIN_DEV_SOURCE.zip
+          name: New-Maa-Durga-47-BACKUP-RESTORE-SOURCE
+          path: |
+            46_NEW_MAA_DURGA_6DIGIT_PIN_DEV_SOURCE.zip
+            47_BACKUP_RESTORE.patch
           if-no-files-found: error
